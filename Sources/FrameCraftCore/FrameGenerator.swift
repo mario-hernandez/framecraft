@@ -74,8 +74,8 @@ public class FrameGenerator {
             device: device
         )
 
-        // Save to file
-        try saveImage(frameImage, to: outputPath)
+        // Save to file at exact pixel dimensions
+        try saveImage(frameImage, to: outputPath, targetWidth: device.width, targetHeight: device.height)
     }
 
     // MARK: - Batch Generation
@@ -371,10 +371,35 @@ public class FrameGenerator {
 
     // MARK: - Save Image
 
-    private func saveImage(_ image: NSImage, to path: String) throws {
-        guard let tiffData = image.tiffRepresentation,
-              let bitmapRep = NSBitmapImageRep(data: tiffData),
-              let pngData = bitmapRep.representation(using: .png, properties: [:]) else {
+    private func saveImage(_ image: NSImage, to path: String, targetWidth: Int, targetHeight: Int) throws {
+        // Create bitmap at exact pixel dimensions (force 1x, ignore Retina scaling)
+        guard let bitmapRep = NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: targetWidth,
+            pixelsHigh: targetHeight,
+            bitsPerSample: 8,
+            samplesPerPixel: 4,
+            hasAlpha: true,
+            isPlanar: false,
+            colorSpaceName: .deviceRGB,
+            bytesPerRow: 0,
+            bitsPerPixel: 0
+        ) else {
+            throw FrameGeneratorError.saveFailed(path)
+        }
+
+        // Draw into the bitmap at exact size
+        NSGraphicsContext.saveGraphicsState()
+        let context = NSGraphicsContext(bitmapImageRep: bitmapRep)
+        NSGraphicsContext.current = context
+
+        let targetRect = NSRect(x: 0, y: 0, width: targetWidth, height: targetHeight)
+        image.draw(in: targetRect, from: .zero, operation: .copy, fraction: 1.0)
+
+        NSGraphicsContext.restoreGraphicsState()
+
+        // Save as PNG
+        guard let pngData = bitmapRep.representation(using: .png, properties: [:]) else {
             throw FrameGeneratorError.saveFailed(path)
         }
 
