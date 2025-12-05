@@ -148,47 +148,73 @@ public class FrameGenerator {
         // 1. Draw gradient background
         drawGradient(context: context, width: width, height: height, template: template)
 
-        // 2. Draw hero text
-        let topPadding = height * 0.05
-        let textAreaHeight = height * 0.22
-        let heroFontSize = height * 0.045
+        // 2. Calculate text sizes first to determine dynamic layout
+        let topPadding = height * 0.06
+        let heroFontSize = height * 0.042
+        let subtitleFontSize = height * 0.022
+        let textSpacing = height * 0.015
+        let textToScreenshotGap = height * 0.025
 
-        let heroY = drawCenteredText(
+        // Measure hero text height
+        let heroTextHeight = measureTextHeight(
+            text: heroText,
+            fontSize: heroFontSize,
+            bold: true,
+            maxWidth: width * 0.88
+        )
+
+        // Measure subtitle height if present
+        var subtitleTextHeight: CGFloat = 0
+        if let subtitle = subtitle, !subtitle.isEmpty {
+            subtitleTextHeight = measureTextHeight(
+                text: subtitle,
+                fontSize: subtitleFontSize,
+                bold: false,
+                maxWidth: width * 0.88
+            )
+        }
+
+        // Calculate total text area needed
+        let totalTextHeight = heroTextHeight + (subtitleTextHeight > 0 ? textSpacing + subtitleTextHeight : 0)
+
+        // 3. Draw hero text
+        let heroStartY = height - topPadding
+        let heroBottomY = drawCenteredText(
             context: context,
             text: heroText,
             fontSize: heroFontSize,
             bold: true,
             color: .white,
-            y: height - topPadding - heroFontSize * 1.5,
+            y: heroStartY,
             width: width,
-            maxWidth: width * 0.9
+            maxWidth: width * 0.88
         )
 
-        // 3. Draw subtitle if present
+        // 4. Draw subtitle if present
+        var textBottomY = heroBottomY
         if let subtitle = subtitle, !subtitle.isEmpty {
-            let subtitleFontSize = height * 0.022
-            _ = drawCenteredText(
+            textBottomY = drawCenteredText(
                 context: context,
                 text: subtitle,
                 fontSize: subtitleFontSize,
                 bold: false,
-                color: NSColor.white.withAlphaComponent(0.7),
-                y: heroY - subtitleFontSize * 2,
+                color: NSColor.white.withAlphaComponent(0.8),
+                y: heroBottomY - textSpacing,
                 width: width,
-                maxWidth: width * 0.9
+                maxWidth: width * 0.88
             )
         }
 
-        // 4. Draw screenshot
-        let screenshotTopY = height * 0.27
-        let screenshotMaxWidth = width * 0.9
-        let screenshotMaxHeight = height * 0.65
-        let cornerRadius = width * 0.03
+        // 5. Draw screenshot - position dynamically below text
+        let screenshotTopY = height - textBottomY + textToScreenshotGap
+        let screenshotMaxWidth = width * 0.88
+        let screenshotMaxHeight = textBottomY - textToScreenshotGap - (height * 0.03)
+        let cornerRadius = width * 0.035
 
         drawScreenshot(
             context: context,
             screenshot: screenshot,
-            x: width * 0.05,
+            x: width * 0.06,
             topY: screenshotTopY,
             maxWidth: screenshotMaxWidth,
             maxHeight: screenshotMaxHeight,
@@ -199,6 +225,34 @@ public class FrameGenerator {
         image.unlockFocus()
 
         return image
+    }
+
+    // MARK: - Text Measurement
+
+    private func measureTextHeight(
+        text: String,
+        fontSize: CGFloat,
+        bold: Bool,
+        maxWidth: CGFloat
+    ) -> CGFloat {
+        let font: NSFont = bold ? NSFont.boldSystemFont(ofSize: fontSize) : NSFont.systemFont(ofSize: fontSize)
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        paragraphStyle.lineBreakMode = .byWordWrapping
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .paragraphStyle: paragraphStyle
+        ]
+
+        let attributedString = NSAttributedString(string: text, attributes: attributes)
+        let textSize = attributedString.boundingRect(
+            with: NSSize(width: maxWidth, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading]
+        )
+
+        return textSize.height
     }
 
     // MARK: - Drawing Helpers
