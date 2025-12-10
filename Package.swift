@@ -40,7 +40,10 @@ let package = Package(
         .executableTarget(
             name: "FrameCraft",
             dependencies: ["FrameCraftCore"],
-            path: "Sources/HeroGenerator"
+            path: "Sources/HeroGenerator",
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
