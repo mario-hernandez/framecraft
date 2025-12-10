@@ -7,114 +7,151 @@ struct ControlPanel: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 24) {
                 // Header
-                HStack {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("FrameCraft")
-                        .font(.headline)
-                    Spacer()
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Text("App Store Frame Generator")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                .padding(.bottom, 10)
+                .padding(.bottom, 8)
 
-                // Image Picker
-                GroupBox(label: Text("Screenshot")) {
-                    HStack {
-                        Button("Choose Image...") {
-                            selectImage()
+                Divider()
+
+                // Configuration Section
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Configuration")
+                        .font(.headline)
+                    
+                    // Screenshot Picker
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Screenshot Source")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        HStack {
+                            Button {
+                                selectImage()
+                            } label: {
+                                HStack {
+                                    Image(systemName: "photo")
+                                    Text(appState.screenshotImage == nil ? "Select Screenshot..." : "Change Screenshot")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .controlSize(.large)
                         }
+                        
                         if appState.screenshotImage != nil {
-                            Text("Image Loaded")
+                            Label("Image Loaded Successfully", systemImage: "checkmark.circle.fill")
                                 .foregroundColor(.green)
                                 .font(.caption)
                         }
                     }
-                    .padding(5)
-                }
 
-                // Text Inputs
-                GroupBox(label: Text("Text")) {
-                    VStack(alignment: .leading) {
-                        TextField("Hero Text", text: $appState.heroText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                        TextField("Subtitle", text: $appState.subtitleText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                    }
-                    .padding(5)
-                }
-
-                // Template Selection
-                GroupBox(label: Text("Template")) {
-                    VStack(alignment: .leading) {
-                        Picker("Preset", selection: $appState.selectedTemplate) {
-                            ForEach(GradientTemplate.allTemplates) { template in
-                                Text(template.name).tag(template)
-                            }
-                        }
-                        .onChange(of: appState.selectedTemplate) {
-                            appState.isCustomGradient = false
-                        }
-
-                        Toggle("Custom Gradient", isOn: $appState.isCustomGradient)
-
-                        if appState.isCustomGradient {
-                            ColorPicker("Top Color", selection: $appState.customTopColor)
-                            ColorPicker("Bottom Color", selection: $appState.customBottomColor)
-                        }
-                    }
-                    .padding(5)
-                }
-
-                // Size Selection
-                GroupBox(label: Text("Dimensions")) {
-                    Picker("Device", selection: $appState.selectedDevice) {
-                        ForEach(DeviceSize.allSizes) { size in
-                            Text(size.name).tag(size)
-                        }
-                    }
-                    .padding(5)
-                }
-
-                // Export
-                GroupBox(label: Text("Export")) {
-                    Button(action: exportImage) {
-                        HStack {
-                            Image(systemName: "square.and.arrow.up")
-                            Text("Export PNG")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .controlSize(.large)
-                    .buttonStyle(.borderedProminent)
-                    .padding(5)
-                }
-
-                // MCP Info
-                GroupBox(label: Text("MCP Integration")) {
+                    // Device Size
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Para usar con Claude Code:")
+                        Text("Target Device")
                             .font(.caption)
                             .foregroundColor(.secondary)
-
-                        Text("framecraft-mcp")
-                            .font(.system(.caption, design: .monospaced))
-                            .padding(4)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(4)
-
-                        Button("Copy CLI Path") {
-                            copyMCPPath()
+                        
+                        Picker("", selection: $appState.selectedDevice) {
+                            ForEach(DeviceSize.allSizes) { size in
+                                Text(size.name).tag(size)
+                            }
                         }
-                        .font(.caption)
+                        .labelsHidden()
                     }
-                    .padding(5)
+                }
+
+                Divider()
+
+                // Content Section
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Content")
+                        .font(.headline)
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Hero Text")
+                                .font(.caption)
+                            TextField("Enter catchy title", text: $appState.heroText)
+                                .textFieldStyle(.roundedBorder)
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Subtitle")
+                                .font(.caption)
+                            TextField("Enter description", text: $appState.subtitleText)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                    }
+                }
+
+                Divider()
+
+                // Style Section
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Style")
+                        .font(.headline)
+                    
+                    Picker("Template", selection: $appState.selectedTemplate) {
+                        ForEach(GradientTemplate.allTemplates) { template in
+                            HStack {
+                                Circle()
+                                    .fill(LinearGradient(colors: [template.topSwiftUIColor, template.bottomSwiftUIColor], startPoint: .top, endPoint: .bottom))
+                                    .frame(width: 12, height: 12)
+                                Text(template.name)
+                            }
+                            .tag(template)
+                        }
+                    }
+                    .onChange(of: appState.selectedTemplate) {
+                        appState.isCustomGradient = false
+                    }
+
+                    Toggle("Custom Gradient", isOn: $appState.isCustomGradient)
+                        .font(.caption)
+
+                    if appState.isCustomGradient {
+                        HStack {
+                            ColorPicker("Top", selection: $appState.customTopColor)
+                            ColorPicker("Bottom", selection: $appState.customBottomColor)
+                        }
+                    }
                 }
 
                 Spacer()
+
+                // Footer Actions
+                VStack(spacing: 12) {
+                    Button(action: exportImage) {
+                        HStack {
+                            Image(systemName: "square.and.arrow.up")
+                            Text("Export Frame")
+                                .fontWeight(.medium)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
+                    }
+                    .controlSize(.large)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(appState.screenshotImage == nil)
+                    
+                    if appState.screenshotImage == nil {
+                        Text("Select a screenshot to export")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
-            .padding()
+            .padding(24)
         }
-        .frame(minWidth: 300, maxWidth: 400)
+        .background(Color(NSColor.controlBackgroundColor))
+        .frame(minWidth: 320, maxWidth: 400)
     }
 
     func selectImage() {
