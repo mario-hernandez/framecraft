@@ -97,19 +97,6 @@ Edita tu archivo de configuración (normalmente en `~/Library/Application Suppor
 Reinicia Claude. Deberías ver el icono de conexión en la herramienta 🔌. Puedes probar pidiéndole:
 *"Genera un frame usando la plantilla ocean y este screenshot..."*
 
-## 🤖 Cómo usar con IA (Workflow)
-
-Una vez conectado, FrameCraft le da "ojos y manos" a tu agente para manipular imágenes.
-
-### **1. Generar un Frame básico**
-Arrastra un screenshot al chat y dile:
-> *"Genera un frame para esta imagen usando la plantilla **ocean**. Ponle de título 'Gestión de Tareas' y subtítulo 'Organiza tu día'."*
-
-### **2. Generación por Lotes (Batch)**
-Sube 5 imágenes de golpe y dile:
-> *"Genera frames para todas estas imágenes. Usa la plantilla **sunset**. Para la primera usa el título 'Inicio', para la segunda 'Perfil'..."*
-
-### **3. Consultar Diseños**
 > *"¿Qué plantillas de gradiente tienes disponibles?"*
 
 ---
