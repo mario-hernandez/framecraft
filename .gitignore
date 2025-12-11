@@ -1,6 +1,5 @@
 # Xcode
-*.xcodeproj/
-*.xcworkspace/
+# Xcode
 xcuserdata/
 *.xccheckout
 *.moved-aside
