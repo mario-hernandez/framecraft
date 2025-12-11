@@ -45,20 +45,39 @@ swift run FrameCraft
 swift run framecraft-mcp
 ```
 
-## Uso con Claude Code
+## Instalación y Uso Universal (MCP)
 
-Agregar a `~/.claude/claude_desktop_config.json`:
+FrameCraft implementa el **Model Context Protocol (MCP)**, por lo que es compatible con cualquier cliente MCP, incluyendo Claude Desktop y Claude Code.
+
+### 1. Compilar el servidor
+Primero, genera el binario optimizado:
+
+```bash
+swift build -c release --product framecraft-mcp
+```
+
+El ejecutable estará en: `.build/release/framecraft-mcp`. Para facilitar su uso, puedes copiarlo a una ruta global o anotar su ruta absoluta (`pwd`).
+
+### 2. Configurar en Claude Desktop
+
+Edita tu archivo de configuración (normalmente en `~/Library/Application Support/Claude/claude_desktop_config.json` en macOS):
 
 ```json
 {
   "mcpServers": {
     "framecraft": {
-      "command": "/path/to/framecraft-mcp",
+      "command": "/ruta/absoluta/a/tu/repo/.build/release/framecraft-mcp",
       "args": []
     }
   }
 }
 ```
+
+> **Nota:** Asegúrate de usar la ruta **absoluta** al ejecutable.
+
+### 3. Verificar instalación
+Reinicia Claude. Deberías ver el icono de conexión en la herramienta 🔌. Puedes probar pidiéndole:
+*"Genera un frame usando la plantilla ocean y este screenshot..."*
 
 ## Herramientas MCP
 
