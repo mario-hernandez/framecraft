@@ -77,76 +77,28 @@ struct ControlPanel: View {
                     
                     VStack(alignment: .leading, spacing: 12) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Hero Text")
-                                .font(.caption)
-                            TextField("Enter catchy title", text: $appState.heroText)
-                                .textFieldStyle(.roundedBorder)
-                        }
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Subtitle")
-                                .font(.caption)
-                            TextField("Enter description", text: $appState.subtitleText)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                    }
-                }
-
-                Divider()
-
-                // Style Section
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Style")
-                        .font(.headline)
-                    
-                    Picker("Template", selection: $appState.selectedTemplate) {
-                        ForEach(GradientTemplate.allTemplates) { template in
+                        Button(action: selectImage) {
                             HStack {
-                                Circle()
-                                    .fill(LinearGradient(colors: [template.topSwiftUIColor, template.bottomSwiftUIColor], startPoint: .top, endPoint: .bottom))
-                                    .frame(width: 12, height: 12)
-                                Text(template.name)
+                                Image(systemName: "photo")
+                                Text(appState.screenshotImage == nil ? "Select Screenshot..." : "Change Screenshot")
                             }
-                            .tag(template)
+                            .frame(maxWidth: .infinity)
+                        }
+                        
+                        if appState.screenshotImage == nil {
+                            Text("Select a screenshot to export")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        } else {
+                            Button(action: exportImage) {
+                                Label("Export Frame", systemImage: "square.and.arrow.up")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
                     }
-                    .onChange(of: appState.selectedTemplate) {
-                        appState.isCustomGradient = false
-                    }
-
-                    Toggle("Custom Gradient", isOn: $appState.isCustomGradient)
-                        .font(.caption)
-
-                    if appState.isCustomGradient {
-                        HStack {
-                            ColorPicker("Top", selection: $appState.customTopColor)
-                            ColorPicker("Bottom", selection: $appState.customBottomColor)
-                        }
-                    }
-                }
-
-                Spacer()
-
-                // Footer Actions
-                VStack(spacing: 12) {
-                    Button(action: exportImage) {
-                        HStack {
-                            Image(systemName: "square.and.arrow.up")
-                            Text("Export Frame")
-                                .fontWeight(.medium)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
-                    }
-                    .controlSize(.large)
-                    .buttonStyle(.borderedProminent)
-                    .disabled(appState.screenshotImage == nil)
-                    
-                if appState.screenshotImage == nil {
-                        Text("Select a screenshot to export")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
+                    .padding(4)
                 }
                 
                 Divider()

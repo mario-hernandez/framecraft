@@ -1,14 +1,32 @@
-# FrameCraft
+# FrameCraft 🎨
 
-Generador de frames para App Store con soporte MCP (Model Context Protocol).
+[![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
+[![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)](https://apple.com/macos)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Descripcion
+**The ultimate tool for creating stunning App Store screenshots.**
+Designed for developers, FrameCraft allows you to generate professional marketing frames with beautiful gradients and device mockups — manually via the Mac App, or automatically via the MCP Server.
 
-FrameCraft permite crear screenshots profesionales para App Store con:
-- Fondos de gradiente personalizables
-- Textos hero y subtitulos
-- Multiples tamanos de dispositivo
-- Integracion con Claude Code via MCP
+## Features
+- **Mac App**: Visual editor with real-time preview.
+- **MCP Server**: Automate generation using Claude Code or other Agents.
+- **Templates**: 10+ professional gradient presets (Ocean, Sunset, Midnight...).
+- **Devices**: Support for all major iPhone and iPad sizes.
+
+## 🚀 Installation
+
+### Option A: Mac App (Visual)
+Download the latest version from the [Releases](https://github.com/mario-hernandez/framecraft/releases) or build from source:
+```bash
+xcodebuild -project FrameCraftApp/FrameCraftApp.xcodeproj -scheme FrameCraftApp build
+```
+
+### Option B: MCP Server (Automation)
+Install via Homebrew to use with AI Agents:
+```bash
+brew tap mario-hernandez/tap
+brew install framecraft-mcp
+```
 
 ## Arquitectura
 
