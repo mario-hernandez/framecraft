@@ -92,18 +92,57 @@ struct FramePreview: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(isMac ? width * 0.02 : deviceCornerRadius) // Screen radius
-                            // Custom Frame Overlay
+                            // Custom Frame Overlay with Precise Spec (User Manual Asset)
                             .overlay(
                                 Group {
                                     if isMac {
-                                        // Realistic MacBook Frame Asset
-                                        Image("MacBookFrame")
-                                            .resizable()
-                                            .allowsHitTesting(false) // Let clicks pass through if needed
-                                            // The frame image includes bezel and notch, so we stretch it slightly over the content
-                                            // Ideally the asset aspect ratio matches. 
-                                            // We scale it to fit the content frame + bezel thickness.
-                                            .scaleEffect(1.03) // Slight overflow to cover edges
+                                        // Asset: 3600 x 2400
+                                        // Margins provided by User:
+                                        // Top: 64, Bottom: 215
+                                        // Left: 106, Right: 103
+                                        // Screen Width = 3600 - 106 - 103 = 3391
+                                        // Screen Height = 2400 - 64 - 215 = 2121
+                                        
+                                        GeometryReader { geo in
+                                            let screenWidth = 3391.0
+                                            let assetWidth = 3600.0
+                                            let assetHeight = 2400.0
+                                            
+                                            // The `geo.size` here represents the SCREEN content size (the screenshot).
+                                            // We scale the Frame Asset so that its "transparent hole" equals `geo.size`.
+                                            // Scale Factor = geo.size.width / screenWidth (in unscaled asset coords)
+                                            // Actual Display Width of Frame = assetWidth * (geo.size.width / screenWidth)
+                                            
+                                            let frameDisplayWidth = assetWidth * (geo.size.width / screenWidth)
+                                            let frameDisplayHeight = assetHeight * (geo.size.width / screenWidth) // Preserve aspect ratio
+                                            
+                                            // Offset Calculation:
+                                            // We need to align the "Screen Area" of the asset with the `geo` center.
+                                            // Asset Center (X,Y) = (1800, 1200)
+                                            // Screen Center relative to Asset TopLeft:
+                                            // X = 106 + (3391 / 2) = 106 + 1695.5 = 1801.5
+                                            // Y = 64 + (2121 / 2) = 64 + 1060.5 = 1124.5
+                                            
+                                            // The Frame needs to be shifted so that (1801.5, 1124.5) in Asset Space matches (0,0) in Overlay Space (Center).
+                                            // Current Asset Center is (1800, 1200).
+                                            // Shift X = (1800 - 1801.5) = -1.5 (Move Left)
+                                            // Shift Y = (1200 - 1124.5) = 75.5 (Move Down)
+                                            // We scale these shifts by the display ratio.
+                                            
+                                            let scaleRatio = geo.size.width / screenWidth
+                                            let xOffset = -1.5 * scaleRatio
+                                            let yOffset = 75.5 * scaleRatio
+                                            
+                                            Image("MacBookFrame")
+                                                .resizable()
+                                                .allowsHitTesting(false)
+                                                .frame(width: frameDisplayWidth, height: frameDisplayHeight)
+                                                .offset(x: xOffset, y: yOffset)
+                                                .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                                        }
+                                        // Expand the bounds of the overlay to prevent clipping slightly if needed,
+                                        // but GeometryReader inside overlay usually respects parent bounds.
+                                        // We trust the frame to overflow naturally.
                                     } else {
                                         // Standard Phone/Pad Bezel
                                         RoundedRectangle(cornerRadius: deviceCornerRadius)
@@ -111,7 +150,7 @@ struct FramePreview: View {
                                     }
                                 }
                             )
-                            // Device Outer Border (Hardware feel) - Only for non-Macs now as Mac uses full image
+                            // Device Outer Border (Hardware feel) - Only for non-Macs
                             .overlay(
                                 Group {
                                     if !isMac {

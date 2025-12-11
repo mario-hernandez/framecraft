@@ -304,13 +304,44 @@ struct ControlPanel: View {
         panel.nameFieldStringValue = "Frame_\(appState.selectedTemplate.name).png"
         
         if panel.runModal() == .OK, let url = panel.url {
-            let renderer = ImageRenderer(content: FramePreview(appState: appState).frameContent)
-            renderer.scale = 2.0 // Retina export
+            // Determine Target Resolution
+            var targetWidth: CGFloat = CGFloat(appState.selectedDevice.width)
+            var targetHeight: CGFloat = CGFloat(appState.selectedDevice.height)
             
-            if let nsImage = renderer.nsImage {
-                if let tiffData = nsImage.tiffRepresentation,
-                   let bitmapImage = NSBitmapImageRep(data: tiffData),
-                   let pngData = bitmapImage.representation(using: .png, properties: [:]) {
+            if appState.selectedDevice.id.contains("macbook") {
+                targetWidth = 2560
+                targetHeight = 1600
+            }
+            
+            // Create a dedicated export view
+            let exportView = FramePreview(appState: appState)
+                .frame(width: targetWidth, height: targetHeight)
+                .edgesIgnoringSafeArea(.all)
+            
+            let hostingView = NSHostingView(rootView: exportView)
+            hostingView.frame = CGRect(x: 0, y: 0, width: targetWidth, height: targetHeight)
+            hostingView.layoutSubtreeIfNeeded()
+            
+            // Force 1x Scale (One Point = One Pixel)
+            // We manually create a bitmap rep with exact pixel dimensions matching the point size.
+            // This prevents the system from applying the 2.0x Retina factor.
+            if let rep = NSBitmapImageRep(
+                bitmapDataPlanes: nil,
+                pixelsWide: Int(targetWidth),
+                pixelsHigh: Int(targetHeight),
+                bitsPerSample: 8,
+                samplesPerPixel: 4,
+                hasAlpha: true,
+                isPlanar: false,
+                colorSpaceName: .deviceRGB,
+                bytesPerRow: 0,
+                bitsPerPixel: 0
+            ) {
+                rep.size = NSSize(width: targetWidth, height: targetHeight)
+                
+                hostingView.cacheDisplay(in: hostingView.bounds, to: rep)
+                
+                if let pngData = rep.representation(using: NSBitmapImageRep.FileType.png, properties: [:]) {
                     try? pngData.write(to: url)
                 }
             }
