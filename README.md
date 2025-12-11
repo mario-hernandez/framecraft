@@ -1,154 +1,81 @@
-# FrameCraft 🎨
+<div align="center">
 
-[![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
-[![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)](https://apple.com/macos)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+# FrameCraft
+### Professional App Store Assets, Zero Friction.
 
-**The ultimate tool for creating stunning App Store screenshots.**
-Designed for developers, FrameCraft allows you to generate professional marketing frames with beautiful gradients and device mockups — manually via the Mac App, or automatically via the MCP Server.
+![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg?style=flat-square&logo=swift)
+![Platform](https://img.shields.io/badge/Platform-macOS_14+-lightgrey.svg?style=flat-square&logo=apple)
+![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
+[![MCP Ready](https://img.shields.io/badge/MCP-Ready-green?style=flat-square&logo=anthropic)](https://modelcontextprotocol.io)
 
-## Features
-- **Mac App**: Visual editor with real-time preview.
-- **MCP Server**: Automate generation using Claude Code or other Agents.
-- **Templates**: 10+ professional gradient presets (Ocean, Sunset, Midnight...).
-- **Devices**: Support for all major iPhone and iPad sizes.
+<p align="center">
+  <strong>FrameCraft</strong> turns raw simulator screenshots into stunning, Apple Design Award-worthy marketing assets. 
+  <br>
+  Available as a <strong>native macOS App</strong> for visual editing and a <strong>CLI/MCP Server</strong> for AI automation.
+</p>
 
-## 🚀 Installation
+[Download Latest Release](https://github.com/mario-hernandez/framecraft/releases) • [Automation Guide](https://mario-hernandez.github.io/framecraft/setup.html)
 
-### Option A: Mac App (Visual)
-Download the latest version from the [Releases](https://github.com/mario-hernandez/framecraft/releases) or build from source:
-```bash
-xcodebuild -project FrameCraftApp/FrameCraftApp.xcodeproj -scheme FrameCraftApp build
-```
-
-### Option B: MCP Server (Automation)
-Install via Homebrew to use with AI Agents:
-```bash
-brew tap mario-hernandez/tap
-brew install framecraft-mcp
-```
-
-## Arquitectura
-
-```
-FrameCraft/
-├── Sources/
-│   ├── FrameCraftCore/     # Biblioteca compartida
-│   ├── FrameCraftCLI/      # Servidor MCP (stdio)
-│   └── HeroGenerator/      # GUI macOS (SwiftUI)
-└── Package.swift
-```
-
-## Productos
-
-| Producto | Tipo | Uso |
-|----------|------|-----|
-| `FrameCraft` | GUI App | Interfaz grafica macOS |
-| `framecraft-mcp` | CLI | Servidor MCP para automatizacion |
-| `FrameCraftCore` | Library | Logica compartida |
-
-## Compilacion
-
-```bash
-# Compilar todo
-swift build
-
-# Compilar release
-swift build -c release
-
-# Ejecutar GUI
-swift run FrameCraft
-
-# Ejecutar servidor MCP
-swift run framecraft-mcp
-```
-
-## Instalación y Uso Universal (MCP)
-
-FrameCraft implementa el **Model Context Protocol (MCP)**, por lo que es compatible con cualquier cliente MCP, incluyendo Claude Desktop y Claude Code.
-
-### 1. Compilar el servidor
-Primero, genera el binario optimizado:
-
-```bash
-swift build -c release --product framecraft-mcp
-```
-
-El ejecutable estará en: `.build/release/framecraft-mcp`. Para facilitar su uso, puedes copiarlo a una ruta global o anotar su ruta absoluta (`pwd`).
-
-### 2. Configurar en Claude Desktop
-
-Edita tu archivo de configuración (normalmente en `~/Library/Application Support/Claude/claude_desktop_config.json` en macOS):
-
-```json
-{
-  "mcpServers": {
-    "framecraft": {
-      "command": "/ruta/absoluta/a/tu/repo/.build/release/framecraft-mcp",
-      "args": []
-    }
-  }
-}
-```
-
-> **Nota:** Asegúrate de usar la ruta **absoluta** al ejecutable.
-
-### 3. Verificar instalación
-Reinicia Claude. Deberías ver el icono de conexión en la herramienta 🔌. Puedes probar pidiéndole:
-*"Genera un frame usando la plantilla ocean y este screenshot..."*
-
-> *"¿Qué plantillas de gradiente tienes disponibles?"*
+</div>
 
 ---
 
-## Herramientas MCP
+## ✨ Why FrameCraft?
 
-### generate_frame
-Genera un frame individual.
+Creating App Store screenshots is usually a pain. You need Photoshop, templates, or expensive subscription tools. FrameCraft solves this with a "hyper-premium" native experience that runs 100% offline.
 
-```json
-{
-  "screenshot_path": "/path/to/screenshot.png",
-  "hero_text": "Texto principal",
-  "subtitle": "Subtitulo opcional",
-  "template": "ocean",
-  "output_path": "/path/to/output.png"
-}
+- **Studio Quality**: Automatic device framing, realistic shadows, and professional gradients.
+- **Developer First**: Built with SwiftUI for macOS. Fast, lightweight, and scriptable.
+- **AI Powered**: Includes the first-ever **MCP Server** for screenshot generation, allowing you to use Claude to build your assets.
+
+## 🚀 Two Ways to Use
+
+### 1. The Visual Studio (GUI)
+Perfect for tweaking designs and previewing changes in real-time.
+
+1. **Launch App**: Open `FrameCraft.app`.
+2. **Drop**: Drag your simulator screenshot onto the studio area.
+3. **Style**: Choose from curated templates like *Ocean*, *Midnight*, or *Minimal*.
+4. **Export**: Get a 4K, App Store-ready PNG in one click.
+
+### 2. The Automation Engine (CLI & MCP)
+Perfect for batch processing or letting AI do the work. The `framecraft-mcp` server exposes the app's core logic to AI agents.
+
+#### Installation
+```bash
+brew install mario-hernandez/framecraft/framecraft-mcp
 ```
 
-### list_templates
-Lista plantillas disponibles: ocean, sunset, forest, midnight, berry, coral, mint, slate, dawn, sand.
+#### Automate with Claude
+Connect FrameCraft to Claude Desktop to generate assets using natural language.
 
-### generate_batch
-Genera multiples frames de una vez.
+> "Take all screenshots in my folder and frame them with the 'Sunset' template for iPhone 15 Pro."
 
-## Plantillas de gradiente
+[👉 **Read the Easy Setup Guide**](https://mario-hernandez.github.io/framecraft/setup.html)
 
-| ID | Nombre | Colores |
-|----|--------|---------|
-| ocean | Ocean | #0F2027 -> #2C5364 |
-| sunset | Sunset | #F37335 -> #FDC830 |
-| forest | Forest | #134E5E -> #71B280 |
-| midnight | Midnight | #232526 -> #414345 |
-| berry | Berry | #8E2DE2 -> #4A00E0 |
-| coral | Coral | #FF416C -> #FF4B2B |
-| mint | Mint | #00B09B -> #96C93D |
-| slate | Slate | #2C3E50 -> #4CA1AF |
-| dawn | Dawn | #C33764 -> #1D2671 |
-| sand | Sand | #C9B37E -> #9D8858 |
+## 🛠️ For Contributors
 
-## Tamanos soportados
+### Project Structure
+- `FrameCraftApp/`: The native macOS GUI (SwiftUI).
+- `Sources/FrameCraftCLI/`: The command-line tool and MCP server.
+- `Sources/HeroGenerator/`: Shared core logic and rendering engine.
 
-- iPhone 6.7" (1290 x 2796)
-- iPhone 6.5" (1284 x 2778)
-- iPhone 5.5" (1242 x 2208)
-- iPad 12.9" (2048 x 2732)
+### Building from Source
+```bash
+# Clone the repo
+git clone https://github.com/mario-hernandez/framecraft.git
 
-## Requisitos
+# Build the App
+xcodebuild -project FrameCraftApp/FrameCraftApp.xcodeproj -scheme FrameCraftApp build
 
-- macOS 14.0+
-- Swift 5.9+
+# Build the CLI
+swift build -c release
+```
 
-## Licencia
+## 📄 License
 
-MIT
+FrameCraft is open-source software licensed under the [MIT license](LICENSE).
+
+<div align="center">
+  <sub>Built with ❤️ by Mario Hernandez. Designed for the Apple ecosystem.</sub>
+</div>
