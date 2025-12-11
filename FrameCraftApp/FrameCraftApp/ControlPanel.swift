@@ -139,6 +139,21 @@ struct ControlPanel: View {
                     }
                     .buttonStyle(.plain)
                     .frame(height: 60)
+                    .onDrop(of: [.fileURL], isTargeted: $isDragging) { providers in
+                        if let provider = providers.first {
+                            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { (urlData, error) in
+                                DispatchQueue.main.async {
+                                    if let urlData = urlData as? Data,
+                                       let url = URL(dataRepresentation: urlData, relativeTo: nil),
+                                       let image = NSImage(contentsOf: url) {
+                                        appState.screenshotImage = image
+                                    }
+                                }
+                            }
+                            return true
+                        }
+                        return false
+                    }
                 }
 
                 // MARK: - Content Section

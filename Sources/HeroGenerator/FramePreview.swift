@@ -50,7 +50,8 @@ struct FramePreview: View {
     var frameContent: some View {
         let width = appState.selectedDevice.cgWidth
         let height = appState.selectedDevice.cgHeight
-        let deviceCornerRadius = width * 0.04
+        let isMac = appState.selectedDevice.id.lowercased().contains("macbook")
+        let deviceCornerRadius = isMac ? width * 0.03 : width * 0.04
 
         return ZStack {
             // Gradient Background
@@ -61,9 +62,9 @@ struct FramePreview: View {
             )
 
             VStack(spacing: 0) {
-                // Top Padding (approx 8% of height)
+                // Top Padding (Adaptive based on device)
                 Spacer()
-                    .frame(height: height * 0.08)
+                    .frame(height: height * (isMac ? 0.06 : 0.08))
 
                 // Hero Text Area
                 VStack(spacing: height * 0.015) {
@@ -90,17 +91,38 @@ struct FramePreview: View {
                         Image(nsImage: nsImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .cornerRadius(deviceCornerRadius)
-                            // Inner Bezel (Stroke)
+                            .cornerRadius(isMac ? width * 0.02 : deviceCornerRadius) // Screen radius
+                            // Custom Frame Overlay
                             .overlay(
-                                RoundedRectangle(cornerRadius: deviceCornerRadius)
-                                    .stroke(Color.black.opacity(0.1), lineWidth: 1)
+                                Group {
+                                    if isMac {
+                                        // Realistic MacBook Frame Asset
+                                        Image("MacBookFrame")
+                                            .resizable()
+                                            .allowsHitTesting(false) // Let clicks pass through if needed
+                                            // The frame image includes bezel and notch, so we stretch it slightly over the content
+                                            // Ideally the asset aspect ratio matches. 
+                                            // We scale it to fit the content frame + bezel thickness.
+                                            .scaleEffect(1.03) // Slight overflow to cover edges
+                                    } else {
+                                        // Standard Phone/Pad Bezel
+                                        RoundedRectangle(cornerRadius: deviceCornerRadius)
+                                            .stroke(Color.black.opacity(0.1), lineWidth: 1)
+                                    }
+                                }
                             )
-                            // Device Outer Border (The "Phone" hardware feel)
+                            // Device Outer Border (Hardware feel) - Only for non-Macs now as Mac uses full image
                             .overlay(
-                                RoundedRectangle(cornerRadius: deviceCornerRadius)
-                                    .stroke(LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 4)
-                                    .blendMode(.overlay)
+                                Group {
+                                    if !isMac {
+                                        RoundedRectangle(cornerRadius: deviceCornerRadius)
+                                            .stroke(
+                                                LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing), 
+                                                lineWidth: 4
+                                            )
+                                            .blendMode(.overlay)
+                                    }
+                                }
                             )
                             .shadow(color: .black.opacity(0.4), radius: 50, x: 0, y: 20)
                             .padding(.horizontal, width * 0.08)
@@ -110,16 +132,16 @@ struct FramePreview: View {
                             .fill(Color.white.opacity(0.15))
                             .overlay(
                                 VStack(spacing: 20) {
-                                    Image(systemName: "plus.viewfinder")
+                                    Image(systemName: isMac ? "laptopcomputer" : "plus.viewfinder")
                                         .font(.system(size: 60))
                                         .foregroundColor(.white.opacity(0.8))
-                                    Text("Select Screenshot")
+                                    Text(isMac ? "Select Mac App Screenshot" : "Select Screenshot")
                                         .font(.system(size: 24, weight: .medium))
                                         .foregroundColor(.white)
                                 }
                             )
                             .padding(.horizontal, width * 0.08)
-                            .frame(height: height * 0.6)
+                            .frame(height: isMac ? height * 0.5 : height * 0.6) // Adjust aspect for Mac
                     }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)

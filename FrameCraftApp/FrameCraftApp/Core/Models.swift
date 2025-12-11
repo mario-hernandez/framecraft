@@ -66,7 +66,8 @@ public struct DeviceSize: Identifiable, Hashable, Codable {
         DeviceSize(id: "iphone_6.5", name: "iPhone 6.5\" (1284 x 2778)", width: 1284, height: 2778),
         DeviceSize(id: "iphone_5.5", name: "iPhone 5.5\" (1242 x 2208)", width: 1242, height: 2208),
         DeviceSize(id: "ipad_12.9", name: "iPad 12.9\" (2048 x 2732)", width: 2048, height: 2732),
-        DeviceSize(id: "ipad_13", name: "iPad Pro 13\" (2064 x 2752)", width: 2064, height: 2752)
+        DeviceSize(id: "ipad_13", name: "iPad Pro 13\" (2064 x 2752)", width: 2064, height: 2752),
+        DeviceSize(id: "macbook_pro_16", name: "MacBook Pro 16\" (3456 x 2234)", width: 3456, height: 2234)
     ]
 
     public static func find(byId id: String) -> DeviceSize? {
