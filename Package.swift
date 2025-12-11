@@ -10,7 +10,7 @@ let package = Package(
     products: [
         // GUI App
         .executable(
-            name: "FrameCraft",
+            name: "FrameCraftGUI",
             targets: ["FrameCraft"]
         ),
         // CLI MCP Server
