@@ -11,9 +11,13 @@ struct ControlPanel: View {
             VStack(alignment: .leading, spacing: 24) {
                 // Header
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("FrameCraft")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                    HStack {
+                        Image(systemName: "photo.artframe")
+                            .font(.title2)
+                        Text("FrameCraft")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
                     Text("App Store Frame Generator")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -22,61 +26,34 @@ struct ControlPanel: View {
 
                 Divider()
 
-                // Configuration Section
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Configuration")
-                        .font(.headline)
-                    
-                    // Screenshot Picker
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Screenshot Source")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                // SECTION 1: CONTENT & STYLE
+                GroupBox(label: Label("Content & Style", systemImage: "paintpalette.fill")) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        TextField("Hero Text", text: $appState.heroText)
+                            .textFieldStyle(.roundedBorder)
                         
-                        HStack {
-                            Button {
-                                selectImage()
-                            } label: {
-                                HStack {
-                                    Image(systemName: "photo")
-                                    Text(appState.screenshotImage == nil ? "Select Screenshot..." : "Change Screenshot")
-                                }
-                                .frame(maxWidth: .infinity)
+                        TextField("Subtitle", text: $appState.subtitleText)
+                            .textFieldStyle(.roundedBorder)
+
+                        Picker("Template", selection: $appState.selectedTemplate) {
+                            ForEach(GradientTemplate.allTemplates) { template in
+                                Text(template.name).tag(template)
                             }
-                            .controlSize(.large)
-                        }
-                        
-                        if appState.screenshotImage != nil {
-                            Label("Image Loaded Successfully", systemImage: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                                .font(.caption)
                         }
                     }
+                    .padding(8)
+                }
 
-                    // Device Size
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Target Device")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        
-                        Picker("", selection: $appState.selectedDevice) {
+                // SECTION 2: DEVICE & EXPORT
+                GroupBox(label: Label("Device & Export", systemImage: "iphone")) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Picker("Device Size", selection: $appState.selectedDevice) {
                             ForEach(DeviceSize.allSizes) { size in
                                 Text(size.name).tag(size)
                             }
                         }
-                        .labelsHidden()
-                    }
-                }
 
-                Divider()
-
-                // Content Section
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Content")
-                        .font(.headline)
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 4) {
+                        Divider()
 
                         Button(action: selectImage) {
                             HStack {
@@ -90,28 +67,31 @@ struct ControlPanel: View {
                             Text("Select a screenshot to export")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .center)
                         } else {
                             Button(action: exportImage) {
                                 Label("Export Frame", systemImage: "square.and.arrow.up")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.borderedProminent)
+                            .controlSize(.large)
                         }
                     }
-                    .padding(4)
+                    .padding(8)
                 }
                 
                 Divider()
 
-                // MCP Integration (Pro)
+                // SECTION 3: MCP (PRO)
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "terminal.fill")
+                            .foregroundColor(.secondary)
                         Text("MCP Server")
                             .font(.headline)
                     }
                     
-                    Text("Connect FrameCraft to Claude Code using the Model Context Protocol.")
+                    Text("Connect FrameCraft to Claude Code for automated generation.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -123,7 +103,7 @@ struct ControlPanel: View {
                     }
                     .controlSize(.regular)
                 }
-                .padding(.top, 8)
+                .padding(.top, 4)
             }
             .padding(24)
         }
