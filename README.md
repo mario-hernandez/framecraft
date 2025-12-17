@@ -3,6 +3,7 @@
 # FrameCraft
 ### Professional App Store Assets, Zero Friction.
 
+[![Download on Mac App Store](https://img.shields.io/badge/Download_on_the-Mac_App_Store-black?style=flat-square&logo=apple)](https://apps.apple.com/app/framecraft-screenshot-studio/id6756393688)
 ![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg?style=flat-square&logo=swift)
 ![Platform](https://img.shields.io/badge/Platform-macOS_14+-lightgrey.svg?style=flat-square&logo=apple)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
@@ -14,7 +15,7 @@
   Available as a <strong>native macOS App</strong> for visual editing and a <strong>CLI/MCP Server</strong> for AI automation.
 </p>
 
-[Download Latest Release](https://github.com/mario-hernandez/framecraft/releases) • [Automation Guide](https://mario-hernandez.github.io/framecraft/setup.html)
+[Download on Mac App Store](https://apps.apple.com/app/framecraft-screenshot-studio/id6756393688) • [Automation Guide](https://mario-hernandez.github.io/framecraft/setup.html)
 
 </div>
 
