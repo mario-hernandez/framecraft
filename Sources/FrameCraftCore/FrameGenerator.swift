@@ -155,28 +155,6 @@ public class FrameGenerator {
         let textSpacing = height * 0.015
         let textToScreenshotGap = height * 0.025
 
-        // Measure hero text height
-        let heroTextHeight = measureTextHeight(
-            text: heroText,
-            fontSize: heroFontSize,
-            bold: true,
-            maxWidth: width * 0.88
-        )
-
-        // Measure subtitle height if present
-        var subtitleTextHeight: CGFloat = 0
-        if let subtitle = subtitle, !subtitle.isEmpty {
-            subtitleTextHeight = measureTextHeight(
-                text: subtitle,
-                fontSize: subtitleFontSize,
-                bold: false,
-                maxWidth: width * 0.88
-            )
-        }
-
-        // Calculate total text area needed
-        let totalTextHeight = heroTextHeight + (subtitleTextHeight > 0 ? textSpacing + subtitleTextHeight : 0)
-
         // 3. Draw hero text
         let heroStartY = height - topPadding
         let heroBottomY = drawCenteredText(

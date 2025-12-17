@@ -14,36 +14,36 @@ class MCPServer {
         [
             [
                 "name": "generate_frame",
-                "description": "Genera un frame de App Store con screenshot y hero text. Devuelve la ruta del archivo generado.",
+                "description": "Generate an App Store screenshot frame with hero text and gradient background. Returns the path to the generated file.",
                 "inputSchema": [
                     "type": "object",
                     "properties": [
                         "screenshot_path": [
                             "type": "string",
-                            "description": "Ruta absoluta al screenshot PNG/JPG"
+                            "description": "Absolute path to the screenshot PNG/JPG file"
                         ],
                         "hero_text": [
                             "type": "string",
-                            "description": "Texto principal grande que aparece arriba del screenshot"
+                            "description": "Main headline text displayed above the screenshot"
                         ],
                         "subtitle": [
                             "type": "string",
-                            "description": "Subtitulo opcional debajo del hero text"
+                            "description": "Optional subtitle text below the hero text"
                         ],
                         "template": [
                             "type": "string",
                             "enum": GradientTemplate.allTemplates.map { $0.id },
-                            "description": "ID de la plantilla de gradiente: ocean, sunset, forest, midnight, berry, coral, mint, slate, dawn, sand"
+                            "description": "Gradient template ID: ocean, sunset, forest, midnight, berry, coral, mint, slate, dawn, sand"
                         ],
                         "device": [
                             "type": "string",
                             "enum": DeviceSize.allSizes.map { $0.id },
                             "default": "iphone_6.7",
-                            "description": "Tamaño del dispositivo: iphone_6.7, iphone_6.5, iphone_5.5, ipad_12.9"
+                            "description": "Device size: iphone_6.7, iphone_6.5, iphone_5.5, ipad_12.9, ipad_13, macbook_pro_16"
                         ],
                         "output_path": [
                             "type": "string",
-                            "description": "Ruta donde guardar el frame generado (debe terminar en .png)"
+                            "description": "Output path for the generated frame (must end in .png)"
                         ]
                     ],
                     "required": ["screenshot_path", "hero_text", "template", "output_path"]
@@ -51,7 +51,16 @@ class MCPServer {
             ],
             [
                 "name": "list_templates",
-                "description": "Lista todas las plantillas de gradiente disponibles con sus colores",
+                "description": "List all available gradient templates with their colors",
+                "inputSchema": [
+                    "type": "object",
+                    "properties": [:] as [String: Any],
+                    "required": [] as [String]
+                ]
+            ],
+            [
+                "name": "list_devices",
+                "description": "List all available device sizes for frame generation",
                 "inputSchema": [
                     "type": "object",
                     "properties": [:] as [String: Any],
@@ -60,13 +69,13 @@ class MCPServer {
             ],
             [
                 "name": "generate_batch",
-                "description": "Genera multiples frames de una sola vez. Cada frame requiere screenshot_path, hero_text, template y output_path.",
+                "description": "Generate multiple frames at once. Each frame requires screenshot_path, hero_text, template, and output_path.",
                 "inputSchema": [
                     "type": "object",
                     "properties": [
                         "frames": [
                             "type": "array",
-                            "description": "Array de frames a generar",
+                            "description": "Array of frames to generate",
                             "items": [
                                 "type": "object",
                                 "properties": [
@@ -82,7 +91,7 @@ class MCPServer {
                         "device": [
                             "type": "string",
                             "default": "iphone_6.7",
-                            "description": "Tamaño del dispositivo para todos los frames"
+                            "description": "Device size for all frames"
                         ]
                     ],
                     "required": ["frames"]
@@ -118,7 +127,7 @@ class MCPServer {
                 "protocolVersion": "2024-11-05",
                 "serverInfo": [
                     "name": "framecraft-mcp",
-                    "version": "1.0.0"
+                    "version": "1.1.0"
                 ],
                 "capabilities": [
                     "tools": [:]
@@ -162,6 +171,9 @@ class MCPServer {
 
             case "list_templates":
                 resultText = handleListTemplates()
+
+            case "list_devices":
+                resultText = handleListDevices()
 
             case "generate_batch":
                 resultText = try handleGenerateBatch(arguments)
@@ -216,15 +228,22 @@ class MCPServer {
             outputPath: outputPath
         )
 
-        return "Frame generado exitosamente en: \(outputPath)"
+        return "Frame generated successfully at: \(outputPath)"
     }
 
     private func handleListTemplates() -> String {
         let templates = generator.listTemplates()
         let lines = templates.map { t in
-            "- \(t["id"] ?? ""): \(t["name"] ?? "") (\(t["topColor"] ?? "") -> \(t["bottomColor"] ?? ""))"
+            "- \(t["id"] ?? ""): \(t["name"] ?? "") (\(t["topColor"] ?? "") → \(t["bottomColor"] ?? ""))"
         }
-        return "Plantillas disponibles:\n\(lines.joined(separator: "\n"))"
+        return "Available templates:\n\(lines.joined(separator: "\n"))"
+    }
+
+    private func handleListDevices() -> String {
+        let lines = DeviceSize.allSizes.map { d in
+            "- \(d.id): \(d.name)"
+        }
+        return "Available devices:\n\(lines.joined(separator: "\n"))"
     }
 
     private func handleGenerateBatch(_ args: [String: Any]) throws -> String {
@@ -247,7 +266,7 @@ class MCPServer {
 
         let outputPaths = try generator.generateBatch(frames: frames, deviceId: device)
 
-        return "Generados \(outputPaths.count) frames:\n\(outputPaths.joined(separator: "\n"))"
+        return "Generated \(outputPaths.count) frames:\n\(outputPaths.joined(separator: "\n"))"
     }
 
     // MARK: - Response Helpers

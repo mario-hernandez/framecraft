@@ -7,14 +7,14 @@ import FrameCraftCore
 // Check command line arguments
 let args = CommandLine.arguments
 if args.contains("--version") || args.contains("-v") {
-    print("FrameCraft MCP v1.0.0")
+    print("FrameCraft MCP v1.1.0")
     exit(0)
 }
 
 if args.contains("--help") || args.contains("-h") {
     print("""
     FrameCraft MCP Server
-    v1.0.0
+    v1.1.0
 
     Usage: framecraft-mcp [options]
 

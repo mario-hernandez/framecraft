@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrameCraft Automation Setup</title>
+    <title>FrameCraft MCP - Setup & Documentation</title>
     <style>
         :root {
             --primary: #007AFF;
             --bg: #F5F5F7;
             --card: #FFFFFF;
             --text: #1D1D1F;
+            --code-bg: #1a1a1a;
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -28,104 +29,246 @@
             line-height: 1.6;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
         .card {
             background: var(--card);
             padding: 30px;
             border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
         }
-        h1 { font-size: 32px; margin-bottom: 10px; text-align: center; }
-        h2 { font-size: 20px; margin-top: 25px; }
-        p { color: #86868B; }
-        
+        h1 { font-size: 36px; margin-bottom: 10px; text-align: center; }
+        h2 { font-size: 22px; margin-top: 0; margin-bottom: 16px; }
+        h3 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; color: var(--primary); }
+        p { color: #86868B; margin: 10px 0; }
+
         .code-block {
-            background: #2d2d2d;
-            color: #fff;
-            padding: 15px;
+            background: var(--code-bg);
+            color: #28F586;
+            padding: 16px;
             border-radius: 10px;
-            font-family: monospace;
-            font-size: 14px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
             overflow-x: auto;
-            margin: 15px 0;
-            position: relative;
+            margin: 12px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
-        
+        .code-block.json { color: #FFD60A; }
+        .code-block.prompt { color: #BF5AF2; font-style: italic; }
+
         .step-number {
             background: var(--primary);
             color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
-            margin-right: 10px;
+            margin-right: 12px;
         }
-        
-        .button {
-            display: block;
+
+        .badge {
+            display: inline-block;
             background: var(--primary);
             color: white;
-            text-align: center;
-            padding: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(128,128,128,0.2);
+        }
+        th { color: var(--primary); font-weight: 600; }
+        td code {
+            background: rgba(0,122,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+        }
+
+        .tool-card {
+            background: rgba(0,122,255,0.05);
+            border: 1px solid rgba(0,122,255,0.2);
             border-radius: 12px;
-            text-decoration: none;
-            font-weight: 500;
-            margin-top: 20px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .tool-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
+        }
+        .tool-desc {
+            font-size: 14px;
+            color: #86868B;
+            margin: 6px 0;
+        }
+
+        a { color: var(--primary); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>FrameCraft Automation</h1>
-    <p style="text-align: center; font-size: 18px;">Let AI generate frames for you.</p>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
 
+    <h1>FrameCraft MCP</h1>
+    <p style="text-align: center; font-size: 18px;">Automate screenshot framing with AI</p>
+
+    <!-- INSTALLATION -->
     <div class="card">
-        <h2><span class="step-number">1</span>The Easy Way (Recommended)</h2>
-        <p>If you have the Claude Desktop app installed, just paste this into a new conversation:</p>
-        
-        <div class="code-block">
-            I want to use FrameCraft automation. Please help me install the 'framecraft-mcp' server using Homebrew. Formula: brew install mario-hernandez/framecraft/framecraft-mcp
-        </div>
-        <p>Claude will guide you through the rest!</p>
+        <h2><span class="step-number">1</span>Installation</h2>
+        <p>Install the MCP server via Homebrew:</p>
+        <div class="code-block">brew install mario-hernandez/framecraft/framecraft-mcp</div>
+        <p>Verify installation:</p>
+        <div class="code-block">framecraft-mcp --version</div>
     </div>
 
+    <!-- CONFIGURATION -->
     <div class="card">
-        <h2><span class="step-number">2</span>Manual Installation</h2>
-        <p>If you prefer to use the terminal:</p>
-        
-        <p><strong>Step 1: Install the server</strong></p>
-        <div class="code-block">
-            brew install mario-hernandez/framecraft/framecraft-mcp
-        </div>
-
-        <p><strong>Step 2: Configure Claude Desktop</strong></p>
-        <p>Edit your configuration file located at:</p>
-        <div class="code-block">
-            ~/Library/Application Support/Claude/claude_desktop_config.json
-        </div>
-        <p>Add this configuration:</p>
-        <div class="code-block">
-{
+        <h2><span class="step-number">2</span>Configure Claude Desktop</h2>
+        <p>Open your Claude Desktop configuration file:</p>
+        <div class="code-block">~/Library/Application Support/Claude/claude_desktop_config.json</div>
+        <p>Add the FrameCraft server:</p>
+        <div class="code-block json">{
   "mcpServers": {
     "framecraft": {
       "command": "/opt/homebrew/bin/framecraft-mcp",
       "args": []
     }
   }
-}
+}</div>
+        <p><strong>Restart Claude Desktop</strong> after saving.</p>
+    </div>
+
+    <!-- AVAILABLE TOOLS -->
+    <div class="card">
+        <h2><span class="step-number">3</span>Available Tools</h2>
+
+        <div class="tool-card">
+            <div class="tool-name">generate_frame</div>
+            <div class="tool-desc">Generate a single App Store screenshot frame with hero text and gradient background.</div>
+            <h3>Parameters:</h3>
+            <table>
+                <tr><th>Parameter</th><th>Required</th><th>Description</th></tr>
+                <tr><td><code>screenshot_path</code></td><td>Yes</td><td>Absolute path to PNG/JPG</td></tr>
+                <tr><td><code>hero_text</code></td><td>Yes</td><td>Main headline text</td></tr>
+                <tr><td><code>subtitle</code></td><td>No</td><td>Subtitle below hero</td></tr>
+                <tr><td><code>template</code></td><td>Yes</td><td>Gradient template ID</td></tr>
+                <tr><td><code>device</code></td><td>No</td><td>Device size (default: iphone_6.7)</td></tr>
+                <tr><td><code>output_path</code></td><td>Yes</td><td>Output path (.png)</td></tr>
+            </table>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-name">generate_batch</div>
+            <div class="tool-desc">Generate multiple frames at once.</div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-name">list_templates</div>
+            <div class="tool-desc">List all available gradient templates.</div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-name">list_devices</div>
+            <div class="tool-desc">List all available device sizes.</div>
         </div>
     </div>
-    
+
+    <!-- TEMPLATES -->
+    <div class="card">
+        <h2><span class="step-number">4</span>Gradient Templates</h2>
+        <table>
+            <tr><th>ID</th><th>Name</th><th>Colors</th></tr>
+            <tr><td><code>ocean</code></td><td>Ocean</td><td>#0F2027 &rarr; #2C5364</td></tr>
+            <tr><td><code>sunset</code></td><td>Sunset</td><td>#F37335 &rarr; #FDC830</td></tr>
+            <tr><td><code>forest</code></td><td>Forest</td><td>#134E5E &rarr; #71B280</td></tr>
+            <tr><td><code>midnight</code></td><td>Midnight</td><td>#232526 &rarr; #414345</td></tr>
+            <tr><td><code>berry</code></td><td>Berry</td><td>#8E2DE2 &rarr; #4A00E0</td></tr>
+            <tr><td><code>coral</code></td><td>Coral</td><td>#FF416C &rarr; #FF4B2B</td></tr>
+            <tr><td><code>mint</code></td><td>Mint</td><td>#00B09B &rarr; #96C93D</td></tr>
+            <tr><td><code>slate</code></td><td>Slate</td><td>#2C3E50 &rarr; #4CA1AF</td></tr>
+            <tr><td><code>dawn</code></td><td>Dawn</td><td>#C33764 &rarr; #1D2671</td></tr>
+            <tr><td><code>sand</code></td><td>Sand</td><td>#C9B37E &rarr; #9D8858</td></tr>
+        </table>
+    </div>
+
+    <!-- DEVICES -->
+    <div class="card">
+        <h2><span class="step-number">5</span>Device Sizes</h2>
+        <table>
+            <tr><th>ID</th><th>Device</th><th>Resolution</th></tr>
+            <tr><td><code>iphone_6.7</code></td><td>iPhone 6.7"</td><td>1290 x 2796</td></tr>
+            <tr><td><code>iphone_6.5</code></td><td>iPhone 6.5"</td><td>1284 x 2778</td></tr>
+            <tr><td><code>iphone_5.5</code></td><td>iPhone 5.5"</td><td>1242 x 2208</td></tr>
+            <tr><td><code>ipad_12.9</code></td><td>iPad 12.9"</td><td>2048 x 2732</td></tr>
+            <tr><td><code>ipad_13</code></td><td>iPad Pro 13"</td><td>2064 x 2752</td></tr>
+            <tr><td><code>macbook_pro_16</code></td><td>MacBook Pro 16"</td><td>3456 x 2234</td></tr>
+        </table>
+    </div>
+
+    <!-- EXAMPLES -->
+    <div class="card">
+        <h2><span class="step-number">6</span>Usage Examples</h2>
+
+        <h3>Generate a single frame:</h3>
+        <div class="code-block prompt">"Generate an App Store frame for /Users/me/screenshot.png with the title 'Track Your Progress' using the ocean template. Save it to /Users/me/Desktop/frame.png"</div>
+
+        <h3>Generate with subtitle:</h3>
+        <div class="code-block prompt">"Create a frame with hero text 'Beautiful Design' and subtitle 'Made for professionals' using the sunset template for iPhone 6.7"</div>
+
+        <h3>Generate for MacBook:</h3>
+        <div class="code-block prompt">"Generate a MacBook Pro frame for my Mac app screenshot using the midnight template"</div>
+
+        <h3>Batch generation:</h3>
+        <div class="code-block prompt">"Generate frames for all PNG files in /Users/me/screenshots/ using the berry template. Name them frame_1.png, frame_2.png, etc."</div>
+
+        <h3>List available options:</h3>
+        <div class="code-block prompt">"Show me all available FrameCraft templates and devices"</div>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <div class="card">
+        <h2>Troubleshooting</h2>
+
+        <h3>Claude doesn't see FrameCraft tools?</h3>
+        <p>1. Make sure you restarted Claude Desktop after editing the config<br>
+           2. Check that the path is correct: <code>/opt/homebrew/bin/framecraft-mcp</code><br>
+           3. On Intel Macs, the path might be: <code>/usr/local/bin/framecraft-mcp</code></p>
+
+        <h3>Permission errors?</h3>
+        <p>FrameCraft needs read access to your screenshots and write access to the output folder. Make sure the paths exist and are accessible.</p>
+    </div>
+
     <div style="text-align: center; margin-top: 40px; color: #86868B; font-size: 12px;">
-        <p>Developed with ❤️ by Mario Hernandez</p>
+        <p>FrameCraft MCP v1.1.0</p>
+        <p>Developed by Mario Hernandez</p>
     </div>
 </div>
 

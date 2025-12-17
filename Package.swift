@@ -8,11 +8,6 @@ let package = Package(
         .macOS(.v14)
     ],
     products: [
-        // GUI App
-        .executable(
-            name: "FrameCraftGUI",
-            targets: ["FrameCraft"]
-        ),
         // CLI MCP Server
         .executable(
             name: "framecraft-mcp",
@@ -35,15 +30,6 @@ let package = Package(
             name: "FrameCraftCLI",
             dependencies: ["FrameCraftCore"],
             path: "Sources/FrameCraftCLI"
-        ),
-        // GUI App (renamed from HeroGenerator)
-        .executableTarget(
-            name: "FrameCraft",
-            dependencies: ["FrameCraftCore"],
-            path: "Sources/HeroGenerator",
-            resources: [
-                .process("Resources")
-            ]
         )
     ]
 )

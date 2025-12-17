@@ -57,20 +57,29 @@ Connect FrameCraft to Claude Desktop to generate assets using natural language.
 ## 🛠️ For Contributors
 
 ### Project Structure
-- `FrameCraftApp/`: The native macOS GUI (SwiftUI).
-- `Sources/FrameCraftCLI/`: The command-line tool and MCP server.
-- `Sources/HeroGenerator/`: Shared core logic and rendering engine.
+- `FrameCraftApp/`: The native macOS GUI (SwiftUI) - Available on Mac App Store.
+- `Sources/FrameCraftCLI/`: The MCP server for AI automation.
+- `Sources/FrameCraftCore/`: Shared core library (models, frame generator).
 
 ### Building from Source
 ```bash
 # Clone the repo
 git clone https://github.com/mario-hernandez/framecraft.git
+cd framecraft
 
-# Build the App
-xcodebuild -project FrameCraftApp/FrameCraftApp.xcodeproj -scheme FrameCraftApp build
-
-# Build the CLI
+# Build the MCP server
 swift build -c release
+
+# The binary will be at .build/release/framecraft-mcp
+```
+
+### Building the GUI App
+```bash
+# Open in Xcode
+open FrameCraftApp/FrameCraftApp.xcodeproj
+
+# Or build from command line
+xcodebuild -project FrameCraftApp/FrameCraftApp.xcodeproj -scheme FrameCraftApp build
 ```
 
 ## 📄 License
